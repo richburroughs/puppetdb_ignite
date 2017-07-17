@@ -7,6 +7,7 @@ slidenumbers: true
 ^ Export to PDF
 ^ Practice
 
+[.footer: ]
 # What Are You Running? PuppetDB Knows.
 
 ## Rich Burroughs, Daniel Parks
