@@ -1,5 +1,6 @@
 footer: Rich Burroughs, Daniel Parks - Puppet SRE
 slidenumbers: true
+theme: Zurich, 6
 
 ^ To do :
 ^
@@ -10,6 +11,7 @@ slidenumbers: true
 ^ PQL
 
 [.footer: ]
+[.slidenumbers: false ]
 # What Are You Running? PuppetDB Knows.
 
 ## Rich Burroughs, Daniel Parks
