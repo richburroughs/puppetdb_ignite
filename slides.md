@@ -1,4 +1,5 @@
 footer: Rich Burroughs, Daniel Parks - Puppet SRE
+slidenumbers: true
 
 ^ To do :
 ^
