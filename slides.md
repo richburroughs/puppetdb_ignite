@@ -3,9 +3,11 @@ slidenumbers: true
 
 ^ To do :
 ^
-^ Write them slides
-^ Export to PDF
-^ Practice
+^ Definition of PuppetDB - Rich
+^ Service Discovery - Daniel
+^ Queries in Puppet Code - Daniel
+^ Requests - Rich
+^ PQL
 
 [.footer: ]
 # What Are You Running? PuppetDB Knows.
@@ -15,15 +17,25 @@ slidenumbers: true
 
 ---
 
-## First slide
+## What is PuppetDB?
 
 ---
 
-## Some bullet points
-
-- Didn't upgrade to every release
-- No contract around when upgrades would happen
-- Completely manual process
+## How do I get it?
 
 ---
+
+## PQL
+
+---
+
+## Queries in Puppet Code
+
+---
+
+## Service Discovery
+
+---
+
+## Python's Requests Library
 
