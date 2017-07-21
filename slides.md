@@ -34,6 +34,23 @@ theme: Zurich, 6
 
 ---
 
+inventory { certname ~ "^web" and facts.os.family = "Debian" }
+resources { certname ~ "^db" and type = "Postgresql::Server::Database" }
+reports { latest_report? = true and certname ~ "^lb" }
+
+---
+
+$ puppet query 'reports[certname,receive_time,environment] { certname = "lb2.example.com" and latest_report? = true }'
+[
+  {
+    "certname": "lb2.example.com",
+    "receive_time": "2017-07-21T23:04:11.932Z",
+    "environment": "production"
+  }
+]
+
+---
+
 ## Queries in Puppet Code
 
 ---
