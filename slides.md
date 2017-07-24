@@ -1,6 +1,5 @@
 footer: Rich Burroughs, Daniel Parks - Puppet SRE
 slidenumbers: true
-theme: Zurich, 6
 
 ^ To do :
 ^
@@ -33,14 +32,18 @@ theme: Zurich, 6
 ## Puppet Query Language (PQL)
 
 ---
-
+```Ruby
 inventory { certname ~ "^web" and facts.os.family = "Debian" }
+
 resources { certname ~ "^db" and type = "Postgresql::Server::Database" }
+
 reports { latest_report? = true and certname ~ "^lb" }
+```
 
 ---
-
+```Ruby
 $ puppet query 'reports[certname,receive_time,environment] { certname = "lb2.example.com" and latest_report? = true }'
+
 [
   {
     "certname": "lb2.example.com",
@@ -48,7 +51,7 @@ $ puppet query 'reports[certname,receive_time,environment] { certname = "lb2.exa
     "environment": "production"
   }
 ]
-
+```
 ---
 
 ## Queries in Puppet Code
@@ -59,5 +62,50 @@ $ puppet query 'reports[certname,receive_time,environment] { certname = "lb2.exa
 
 ---
 
-## Python's Requests Library
+## REST API
 
+---
+
+^ Python's Requests library is great
+^ Can also use libraries for other languages that do HTTP
+
+![inline](images/requests_screenshot.png)
+
+---
+
+```Python
+import requests
+
+nodes = []
+
+def get_nodes():
+    url = "http://localhost:8080/pdb/query/v4/nodes"
+    r = requests.get(url)
+    response = json.loads(r.text)
+    for i in response:
+        if not i['deactivated'] and not i['expired']:
+            nodes.append(i['certname'])
+```
+
+---
+
+```Python
+def get_fact(certname, fact):
+    url = "http://localhost:8080/pdb/query/v4/nodes/{}/facts/{}".format(certname, fact)
+    r = requests.get(url)
+    response = json.loads(r.text)
+    for i in response:
+        result = i['value']
+        return result
+```
+
+---
+
+```Python
+def main():
+    get_nodes()
+    for node in nodes:
+        operatingsystem = get_fact(node, 'operatingsystem')
+        operatingsystemrelease = get_fact(node, 'operatingsystemrelease')
+        kernelversion = get_fact(node, 'kernelversion')
+```
