@@ -1,14 +1,6 @@
 footer: Rich Burroughs, Daniel Parks - Puppet SRE
 slidenumbers: true
 
-^ To do :
-^
-^ Definition of PuppetDB - Rich
-^ Service Discovery - Daniel
-^ Queries in Puppet Code - Daniel
-^ Requests - Rich
-^ PQL
-
 [.footer: ]
 [.slidenumbers: false ]
 # What Are You Running? PuppetDB Knows.
@@ -25,7 +17,7 @@ slidenumbers: true
 
 ## How do I get it?
 - Included with Puppet Enterprise
-- Open source users can install the puppetlabs/puppetdb module to install and manage it
+- Open source users can use the puppetlabs/puppetdb module to install and manage it
 
 ---
 
@@ -34,15 +26,33 @@ slidenumbers: true
 ---
 ```Ruby
 inventory { certname ~ "^web" and facts.os.family = "Debian" }
-
-resources { certname ~ "^db" and type = "Postgresql::Server::Database" }
-
-reports { latest_report? = true and certname ~ "^lb" }
+[
+  {
+    "certname": "web1.example.com",
+    "timestamp": "2017-03-22T19:36:20.095Z",
+    "environment": "production",
+    "facts": {
+      "memoryfreeinbytes": "1766612992",
+      "os": {
+        "name": "Debian",
+        "distro": {
+          "id": "Debian",
+          "release": {
+            "full": "8.7",
+            "major": "8",
+            "minor": "7"
+          },
+          . . .
 ```
-
 ---
 ```Ruby
-$ puppet query 'reports[certname,receive_time,environment] { certname = "lb2.example.com" and latest_report? = true }'
+resources { certname ~ "^db" and type = "Postgresql::Server::Database" }
+```
+---
+
+```Ruby
+$ puppet query 'reports[certname,receive_time,environment]
+  { certname = "lb2.example.com" and latest_report? = true }'
 
 [
   {
@@ -58,33 +68,62 @@ $ puppet query 'reports[certname,receive_time,environment] { certname = "lb2.exa
 
 ---
 
+``` puppet
+puppetdb_query('inventory {}').each |$node| {
+  sshkey { $node['facts']['fqdn']:
+    key          => $node['facts']['ssh']['rsa']['key'],
+    host_aliases => [$node['facts']['ipaddress']],
+    type         => 'ssh-rsa',
+  }
+}
+```
+---
+
 ## Service Discovery
+
+^ We use this pattern at Puppet a lot
+^ for things like populating load balancers
+^ and configuring monitoring
+
+---
+
+```puppet
+puppetdb_query('inventory[certname] { certname ~ "^web" }').each |$node| {
+  haproxy::balancermember { $node['facts']['fqdn']:
+    listening_service => 'www',
+    server_names      => $node['facts']['fqdn'],
+    ipaddresses       => $node['facts']['ipaddress'],
+    ports             => '80',
+  }
+}
+```
 
 ---
 
 ## REST API
 
+^ Can access via HTTP or HTTPS
+^ If you use as part of PE, you can use RBAC auth tokens
+
 ---
 
 ^ Python's Requests library is great
-^ Can also use libraries for other languages that do HTTP
+^ Can also use libraries for other languages that do HTTP, like Ruby's rest-client
 
 ![inline](images/requests_screenshot.png)
 
 ---
 
 ```Python
-import requests
-
-nodes = []
-
 def get_nodes():
+    nodes = []
     url = "http://localhost:8080/pdb/query/v4/nodes"
     r = requests.get(url)
     response = json.loads(r.text)
     for i in response:
         if not i['deactivated'] and not i['expired']:
             nodes.append(i['certname'])
+    return nodes
 ```
 
 ---
