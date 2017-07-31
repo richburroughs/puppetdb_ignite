@@ -25,10 +25,15 @@ slidenumbers: true
 
 ---
 ```Ruby
-inventory { certname ~ "^web" and facts.os.family = "Debian" }
+                inventory { certname ~ "prod" and facts.os.family = "Debian" }
+```
+
+---
+```Ruby
+$ puppet query 'inventory { certname ~ "prod" and facts.os.family = "Debian" }'
 [
   {
-    "certname": "web1.example.com",
+    "certname": "web1-prod.example.com",
     "timestamp": "2017-03-22T19:36:20.095Z",
     "environment": "production",
     "facts": {
@@ -45,35 +50,94 @@ inventory { certname ~ "^web" and facts.os.family = "Debian" }
           . . .
 ```
 ---
+^ Returns file and line number where the resource is defined
+^ Includes all parameters for the resource, including the ones that aren't directly specified and come from defaults or hiera
 ```Ruby
-resources { certname ~ "^db" and type = "Postgresql::Server::Database" }
+$ puppet query 'resources { type = "Postgresql::Server::Database" }'
+[
+  {
+    "tags": [ . . . ],
+    "file": "/etc/puppetlabs/code/ . . . /profile/manifests/database.pp",
+    "type": "Postgresql::Server::Db",
+    "title": "database",
+    "line": 48,
+    "certname": "db1-prod.example.com",
+    "parameters": {
+      "user": "myapp",
+      "grant": "ALL",
+      "owner": "myapp",
+      "dbname": "myapp",
+      "password": " . . . ",
+      "template": "template0",
+      "istemplate": false
+      . . .
 ```
 ---
 
 ```Ruby
-$ puppet query 'reports[certname,receive_time,environment]
-  { certname = "lb2.example.com" and latest_report? = true }'
-
+❯ puppet query 'resources[certname,environment,title]
+  { type = "Class" and title ~ "Role::" }'
 [
-  {
-    "certname": "lb2.example.com",
-    "receive_time": "2017-07-21T23:04:11.932Z",
-    "environment": "production"
-  }
-]
+  {
+    "certname": "web1-prod.example.com",
+    "environment": "production",
+    "title": "Role::Web"
+  },
+  {
+    "certname": "db1-prod.example.com",
+    "environment": "production",
+    "title": "Role::Db"
+  },
+  {
+    "certname": "web2-dev.example.com",
+    "environment": "nginx_update",
+    "title": "Role::Web"
+    . . .
 ```
 ---
 
 ## Queries in Puppet Code
 
+^ We can also PQL in Puppet code. We often use this instead of exported resources.
 ---
+
+^ Here's an example of setting up hosts in our Icinga2 monitoring system.
+^ We query for all nodes and create a host resource for them based on facts defined for each node.
 
 ``` puppet
 puppetdb_query('inventory {}').each |$node| {
-  sshkey { $node['facts']['fqdn']:
-    key          => $node['facts']['ssh']['rsa']['key'],
-    host_aliases => [$node['facts']['ipaddress']],
-    type         => 'ssh-rsa',
+  $notification_period = 'allhours'
+
+
+
+
+  icinga2::object::host { $node['trusted']['certname']:
+    ipv4_address => $node['facts']['ipaddress'],
+    vars         => {
+      'owner'               => $node['facts']['owner'],
+      'notification_period' => $notification_period,
+    },
+  }
+}
+```
+---
+
+^ Here's an advantage over exported resources.
+^ If I want to test a change to the host object, I only have to run puppet on the master node instead of running it on the host and then then master.
+
+``` puppet
+puppetdb_query('inventory {}').each |$node| {
+  $notification_period = $node['trusted']['hostname'] ? {
+    /-prod$/  => 'allhours',
+    /-stage$/ => 'workhours',
+  }
+
+  icinga2::object::host { $node['trusted']['certname']:
+    ipv4_address => $node['facts']['ipaddress'],
+    vars         => {
+      'owner'               => $node['facts']['owner'],
+      'notification_period' => $notification_period,
+    },
   }
 }
 ```
@@ -85,10 +149,8 @@ puppetdb_query('inventory {}').each |$node| {
 ^ for things like populating load balancers
 ^ and configuring monitoring
 
----
-
 ```puppet
-puppetdb_query('inventory[certname] { certname ~ "^web" }').each |$node| {
+puppetdb_query('inventory { certname ~ "^web" }').each |$node| {
   haproxy::balancermember { $node['facts']['fqdn']:
     listening_service => 'www',
     server_names      => $node['facts']['fqdn'],
