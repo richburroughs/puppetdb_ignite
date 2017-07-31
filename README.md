@@ -7,6 +7,19 @@ That's the best place to go it you want to copy/paste any of the code.
 
 The PDF of the slides is called slides.pdf.
 
+## Example environment
+
+You can set up an example environment with vagrant. Install vagrant and run:
+
+~~~ sh
+gem install r10k
+./run-r10k.sh
+vagrant up puppet-master
+vagrant up web1
+~~~
+
+You can access the puppet master with `vagrant ssh puppet-master`.
+
 ## PQL documentation
 
 * [Examples](https://docs.puppet.com/puppetdb/5.0/api/query/examples-pql.html)
