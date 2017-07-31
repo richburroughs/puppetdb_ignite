@@ -20,6 +20,15 @@ slidenumbers: true
 - Included with Puppet Enterprise
 - Open source users can use the puppetlabs/puppetdb module to install and manage it
 
+```Puppet
+class profile::puppetdb {
+  # Configure puppetdb and its underlying database
+  include puppetdb
+  # Configure the Puppet master to use puppetdb
+  include puppetdb::master::config
+}
+```
+
 ---
 
 ## Puppet Query Language (PQL)
