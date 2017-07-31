@@ -8,6 +8,7 @@ slidenumbers: true
 ## Rich Burroughs, Daniel Parks
 ## Puppet SRE
 
+### http://bit.ly/2uetA88
 ---
 
 ## What is PuppetDB?
