@@ -9,6 +9,9 @@ slidenumbers: true
 ## Puppet SRE
 
 ### http://bit.ly/2uetA88
+
+^ We're the team at Puppet that runs Puppet
+
 ---
 
 ## What is PuppetDB?
@@ -26,7 +29,7 @@ slidenumbers: true
 
 ---
 ```Ruby
-                inventory { certname ~ "prod" and facts.os.family = "Debian" }
+inventory { certname ~ "prod" and facts.os.family = "Debian" }
 ```
 
 ---
@@ -53,6 +56,7 @@ $ puppet query 'inventory { certname ~ "prod" and facts.os.family = "Debian" }'
 ---
 ^ Returns file and line number where the resource is defined
 ^ Includes all parameters for the resource, including the ones that aren't directly specified and come from defaults or hiera
+
 ```Ruby
 $ puppet query 'resources { type = "Postgresql::Server::Database" }'
 [
@@ -76,7 +80,7 @@ $ puppet query 'resources { type = "Postgresql::Server::Database" }'
 ---
 
 ```Ruby
-❯ puppet query 'resources[certname,environment,title]
+$ puppet query 'resources[certname,environment,title]
   { type = "Class" and title ~ "Role::" }'
 [
   {
@@ -100,12 +104,13 @@ $ puppet query 'resources { type = "Postgresql::Server::Database" }'
 ## Queries in Puppet Code
 
 ^ We can also PQL in Puppet code. We often use this instead of exported resources.
+
 ---
 
 ^ Here's an example of setting up hosts in our Icinga2 monitoring system.
 ^ We query for all nodes and create a host resource for them based on facts defined for each node.
 
-``` puppet
+```puppet
 puppetdb_query('inventory {}').each |$node| {
   $notification_period = 'allhours'
 
@@ -126,7 +131,7 @@ puppetdb_query('inventory {}').each |$node| {
 ^ Here's an advantage over exported resources.
 ^ If I want to test a change to the host object, I only have to run puppet on the master node instead of running it on the host and then then master.
 
-``` puppet
+```puppet
 puppetdb_query('inventory {}').each |$node| {
   $notification_period = $node['trusted']['hostname'] ? {
     /-prod$/  => 'allhours',
@@ -211,3 +216,11 @@ def main():
         operatingsystemrelease = get_fact(node, 'operatingsystemrelease')
         kernelversion = get_fact(node, 'kernelversion')
 ```
+
+---
+## In conlusion:
+
+- PuppetDB contains info about resources and nodes
+- PQL to query at the command line
+- Query in your Puppet code
+- Tooling that you write that interacts with the API
