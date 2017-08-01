@@ -1,5 +1,6 @@
 footer: Rich Burroughs, Daniel Parks - Puppet SRE
 slidenumbers: true
+theme: Zurich, 5
 
 [.footer: ]
 [.slidenumbers: false ]
