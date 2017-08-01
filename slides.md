@@ -184,38 +184,34 @@ puppetdb_query('inventory { certname ~ "^web" }').each |$node| {
 ---
 
 ```Python
+import requests
+
+url = "http://httpbin.org/ip"
+r = requests.get(url)
+print(r.txt)
+```
+
+---
+
+
+```Python
+def get_nodes():
+    nodes = []
+    url = "http://localhost:8080/pdb/query/v4/nodes"
+    r = requests.get(url)
+```
+
+---
+
+```Python
 def get_nodes():
     nodes = []
     url = "http://localhost:8080/pdb/query/v4/nodes"
     r = requests.get(url)
     response = json.loads(r.text)
     for i in response:
-        if not i['deactivated'] and not i['expired']:
-            nodes.append(i['certname'])
+        nodes.append(i['certname'])
     return nodes
-```
-
----
-
-```Python
-def get_fact(certname, fact):
-    url = "http://localhost:8080/pdb/query/v4/nodes/{}/facts/{}".format(certname, fact)
-    r = requests.get(url)
-    response = json.loads(r.text)
-    for i in response:
-        result = i['value']
-        return result
-```
-
----
-
-```Python
-def main():
-    get_nodes()
-    for node in nodes:
-        operatingsystem = get_fact(node, 'operatingsystem')
-        operatingsystemrelease = get_fact(node, 'operatingsystemrelease')
-        kernelversion = get_fact(node, 'kernelversion')
 ```
 
 ---
