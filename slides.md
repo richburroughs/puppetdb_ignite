@@ -143,37 +143,10 @@ $ puppet query 'resources[certname,title]
 
 ```Puppet
 puppetdb_query('inventory {}').each |$node| {
-  $period = 'allhours'
-
-
-
-
   icinga2::object::host { $node['certname']:
     ipv4_address => $node['facts']['ipaddress'],
     vars         => {
-      'owner'               => $node['facts']['owner'],
-      'notification_period' => $period,
-    },
-  }
-}
-```
----
-
-^ Here's an advantage over exported resources.
-^ If I want to test a change to the host object, I only have to run puppet on the master node instead of running it on the host and then then master.
-
-```Puppet
-puppetdb_query('inventory {}').each |$node| {
-  $period = $node['trusted']['hostname'] ? {
-    /-prod$/  => 'allhours',
-    /-stage$/ => 'workhours',
-  }
-
-  icinga2::object::host { $node['certname']:
-    ipv4_address => $node['facts']['ipaddress'],
-    vars         => {
-      'owner'               => $node['facts']['owner'],
-      'notification_period' => $period,
+      'owner' => $node['facts']['owner'],
     },
   }
 }
