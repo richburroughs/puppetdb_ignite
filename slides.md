@@ -28,76 +28,107 @@ theme: Zurich, 5
 ## Puppet Query Language (PQL)
 
 ---
+
+# Node Inventory
+
+fact      | value
+----------|----------------------
+certname  | web1-prod.example.com
+ipaddress | 10.0.0.1
+os.family | Debian
+
+---
+
 ```Ruby
-inventory { certname ~ "prod" and facts.os.family = "Debian" }
+# Get information about nodes (hosts)
+inventory {
+
+  # Only nodes where the certname (FQDN) contains "prod"
+  certname ~ "prod"
+
+  # and the OS is Debian
+  and facts.os.name = "Debian"
+}
 ```
 
 ---
 ```Ruby
-$ puppet query 'inventory { certname ~ "prod" and facts.os.family = "Debian" }'
+$ puppet query 'inventory { certname ~ "prod"
+                            and facts.os.name = "Debian" }'
 [
   {
     "certname": "web1-prod.example.com",
     "timestamp": "2017-03-22T19:36:20.095Z",
-    "environment": "production",
     "facts": {
+      "ipaddress": "10.0.0.1",
       "memoryfreeinbytes": "1766612992",
       "os": {
         "name": "Debian",
-        "distro": {
-          "id": "Debian",
-          "release": {
-            "full": "8.7",
-            "major": "8",
-            "minor": "7"
-          },
-          . . .
+        . . .
 ```
+---
+
+# Resources
+
+```Puppet
+class profile::database ( $password ) {
+  # This is a resource:
+  postgresql::server::db { 'myapp_database':
+    user     => 'myapp',
+    password => $password,
+  }
+}
+```
+
 ---
 ^ Returns file and line number where the resource is defined
 ^ Includes all parameters for the resource, including the ones that aren't directly specified and come from defaults or hiera
 
 ```Ruby
-$ puppet query 'resources { type = "Postgresql::Server::Database" }'
+$ puppet query 'resources { type = "Postgresql::Server::Db" }'
 [
   {
-    "tags": [ . . . ],
-    "file": "/etc/puppetlabs/code/ . . . /profile/manifests/database.pp",
-    "type": "Postgresql::Server::Db",
-    "title": "database",
-    "line": 48,
     "certname": "db1-prod.example.com",
+    "file": ". . ./profile/manifests/database.pp",
+    "line": 3,
+    "title": "myapp_database",
     "parameters": {
       "user": "myapp",
       "grant": "ALL",
-      "owner": "myapp",
-      "dbname": "myapp",
-      "password": " . . . ",
-      "template": "template0",
-      "istemplate": false
       . . .
 ```
+
 ---
 
 ```Ruby
-$ puppet query 'resources[certname,environment,title]
+$ puppet query 'resources { type = "Postgresql::Server::Db" }'
+[
+  {
+    "certname": "db1-prod.example.com",
+    "file": ". . ./profile/manifests/database.pp",
+    "line": 3,
+    "title": "myapp_database",
+    "parameters": {
+      "user": "myapp",
+      "grant": "ALL",
+      . . .
+```
+
+---
+
+```Ruby
+$ puppet query 'resources[certname,title]
   { type = "Class" and title ~ "Role::" }'
 [
   {
     "certname": "web1-prod.example.com",
-    "environment": "production",
     "title": "Role::Web"
   },
   {
     "certname": "db1-prod.example.com",
-    "environment": "production",
     "title": "Role::Db"
   },
-  {
-    "certname": "web2-dev.example.com",
-    "environment": "nginx_update",
-    "title": "Role::Web"
-    . . .
+  . . .
 ```
 ---
 
@@ -110,18 +141,18 @@ $ puppet query 'resources[certname,environment,title]
 ^ Here's an example of setting up hosts in our Icinga2 monitoring system.
 ^ We query for all nodes and create a host resource for them based on facts defined for each node.
 
-```puppet
+```Puppet
 puppetdb_query('inventory {}').each |$node| {
-  $notification_period = 'allhours'
+  $period = 'allhours'
 
 
 
 
-  icinga2::object::host { $node['trusted']['certname']:
+  icinga2::object::host { $node['certname']:
     ipv4_address => $node['facts']['ipaddress'],
     vars         => {
       'owner'               => $node['facts']['owner'],
-      'notification_period' => $notification_period,
+      'notification_period' => $period,
     },
   }
 }
@@ -131,37 +162,19 @@ puppetdb_query('inventory {}').each |$node| {
 ^ Here's an advantage over exported resources.
 ^ If I want to test a change to the host object, I only have to run puppet on the master node instead of running it on the host and then then master.
 
-```puppet
+```Puppet
 puppetdb_query('inventory {}').each |$node| {
-  $notification_period = $node['trusted']['hostname'] ? {
+  $period = $node['trusted']['hostname'] ? {
     /-prod$/  => 'allhours',
     /-stage$/ => 'workhours',
   }
 
-  icinga2::object::host { $node['trusted']['certname']:
+  icinga2::object::host { $node['certname']:
     ipv4_address => $node['facts']['ipaddress'],
     vars         => {
       'owner'               => $node['facts']['owner'],
-      'notification_period' => $notification_period,
+      'notification_period' => $period,
     },
-  }
-}
-```
----
-
-## Service Discovery
-
-^ We use this pattern at Puppet a lot
-^ for things like populating load balancers
-^ and configuring monitoring
-
-```puppet
-puppetdb_query('inventory { certname ~ "^web" }').each |$node| {
-  haproxy::balancermember { $node['facts']['fqdn']:
-    listening_service => 'www',
-    server_names      => $node['facts']['fqdn'],
-    ipaddresses       => $node['facts']['ipaddress'],
-    ports             => '80',
   }
 }
 ```
