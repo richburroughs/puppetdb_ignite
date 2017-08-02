@@ -196,11 +196,13 @@ puppetdb_query('inventory {}').each |$node| {
 ---
 
 ```Python
-import requests
-
-url = "http://httpbin.org/ip"
-r = requests.get(url)
-print(r.txt)
+>>> import requests
+>>> url = "http://httpbin.org/ip"
+>>> r = requests.get(url)
+>>> print(r.text)
+{
+  "origin": "10.0.0.1"
+}
 ```
 
 ---
