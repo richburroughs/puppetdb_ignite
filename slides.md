@@ -214,9 +214,5 @@ def get_nodes():
 ```
 
 ---
-## In conlusion:
 
-- PuppetDB contains info about resources and nodes
-- PQL to query at the command line
-- Query in your Puppet code
-- Tooling that you write that interacts with the API
+![http://bit.ly/2uetA88](images/who_we_are.png)
