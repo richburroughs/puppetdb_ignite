@@ -1,8 +1,9 @@
 # puppetdb_igite
-Slides for Config Management Camp talk on PuppetDB
+Slides for Config Management Camp Portland talk on PuppetDB
 
-Markdown slides for Deckset:
+The text for the slides in Markdown is in the file called slides.md.
+That's the best place to go it you want to copy/paste any of the code.
 
-https://www.decksetapp.com/
+The PDF of the slides is called slides.pdf.
 
 
