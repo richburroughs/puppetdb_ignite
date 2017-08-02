@@ -34,7 +34,7 @@ theme: Zurich, 5
 fact      | value
 ----------|----------------------
 certname  | web1-prod.example.com
-ipaddress | 10.0.0.1
+ipaddress | 10.0.0.2
 os.family | Debian
 
 ---
@@ -60,7 +60,7 @@ $ puppet query 'inventory { certname ~ "prod"
     "certname": "web1-prod.example.com",
     "timestamp": "2017-03-22T19:36:20.095Z",
     "facts": {
-      "ipaddress": "10.0.0.1",
+      "ipaddress": "10.0.0.2",
       "memoryfreeinbytes": "1766612992",
       "os": {
         "name": "Debian",
