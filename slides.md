@@ -142,12 +142,17 @@ $ puppet query 'resources[certname,title]
 ^ We query for all nodes and create a host resource for them based on facts defined for each node.
 
 ```Puppet
+# Find load balancer members
+puppetdb_query('inventory { certname ~ "^web.*-prod" }').each |$node| {
+  haproxy::balancermember { $node['facts']['fqdn']:
+    listening_service => 'www',
+  }
+}
+
+# Create icinga2 host objects for all nodes in inventory
 puppetdb_query('inventory {}').each |$node| {
   icinga2::object::host { $node['certname']:
     'ipv4_address' => $node['facts']['ipaddress'],
-    'vars'         => {
-      'owner' => $node['facts']['owner'],
-    },
   }
 }
 ```

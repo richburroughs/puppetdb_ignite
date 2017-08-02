@@ -47,7 +47,3 @@ We use Icinga2 for monitoring at puppet. Let's look at an example of defining ho
 
 This just calls the function `puppetdb_query` with a string of PQL, and then iterates over the results using facts about the nodes to define host objects in Icinga.
 
-Now, if you've used puppet you might be used to exported resources. One of the big reasons to use this over exported resources is so that you can make changes in just one place.
-
-For example, changing the host object in Icinga only requires a puppet run on the Icinga master rather than runs on each of the hosts and then the master.
-
