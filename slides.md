@@ -130,6 +130,13 @@ $ puppet query 'resources[certname,title]
   },
   . . .
 ```
+
+---
+
+^ I like the PQL examples page
+
+![inline](images/docs.png)
+
 ---
 
 ## Queries in Puppet Code
