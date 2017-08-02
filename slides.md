@@ -34,7 +34,7 @@ theme: Zurich, 5
 fact      | value
 ----------|----------------------
 certname  | web1-prod.example.com
-ipaddress | 10.0.0.1
+ipaddress | 10.0.0.2
 os.family | Debian
 
 ---
@@ -60,7 +60,7 @@ $ puppet query 'inventory { certname ~ "prod"
     "certname": "web1-prod.example.com",
     "timestamp": "2017-03-22T19:36:20.095Z",
     "facts": {
-      "ipaddress": "10.0.0.1",
+      "ipaddress": "10.0.0.2",
       "memoryfreeinbytes": "1766612992",
       "os": {
         "name": "Debian",
@@ -130,6 +130,13 @@ $ puppet query 'resources[certname,title]
   },
   . . .
 ```
+
+---
+
+^ I like the PQL examples page
+
+![inline](images/docs.png)
+
 ---
 
 ## Queries in Puppet Code
@@ -142,39 +149,17 @@ $ puppet query 'resources[certname,title]
 ^ We query for all nodes and create a host resource for them based on facts defined for each node.
 
 ```Puppet
-puppetdb_query('inventory {}').each |$node| {
-  $period = 'allhours'
-
-
-
-
-  icinga2::object::host { $node['certname']:
-    ipv4_address => $node['facts']['ipaddress'],
-    vars         => {
-      'owner'               => $node['facts']['owner'],
-      'notification_period' => $period,
-    },
+# Find load balancer members
+puppetdb_query('inventory { certname ~ "^web.*-prod" }').each |$node| {
+  haproxy::balancermember { $node['facts']['fqdn']:
+    listening_service => 'www',
   }
 }
-```
----
 
-^ Here's an advantage over exported resources.
-^ If I want to test a change to the host object, I only have to run puppet on the master node instead of running it on the host and then then master.
-
-```Puppet
+# Create icinga2 host objects for all nodes in inventory
 puppetdb_query('inventory {}').each |$node| {
-  $period = $node['trusted']['hostname'] ? {
-    /-prod$/  => 'allhours',
-    /-stage$/ => 'workhours',
-  }
-
   icinga2::object::host { $node['certname']:
-    ipv4_address => $node['facts']['ipaddress'],
-    vars         => {
-      'owner'               => $node['facts']['owner'],
-      'notification_period' => $period,
-    },
+    'ipv4_address' => $node['facts']['ipaddress'],
   }
 }
 ```
