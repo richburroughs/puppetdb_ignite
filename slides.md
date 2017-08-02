@@ -144,8 +144,8 @@ $ puppet query 'resources[certname,title]
 ```Puppet
 puppetdb_query('inventory {}').each |$node| {
   icinga2::object::host { $node['certname']:
-    ipv4_address => $node['facts']['ipaddress'],
-    vars         => {
+    'ipv4_address' => $node['facts']['ipaddress'],
+    'vars'         => {
       'owner' => $node['facts']['owner'],
     },
   }
