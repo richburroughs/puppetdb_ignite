@@ -15,5 +15,5 @@ The PDF of the slides is called slides.pdf.
 
 ## Authors
 
-* Daniel Parks [@daemonhoarse](https://twitter.com/daemonhoarse)
 * Rich Burroughs [@richburroughs](https://twitter.com/richburroughs)
+* Daniel Parks [@daemonhoarse](https://twitter.com/daemonhoarse)
