@@ -1,5 +1,12 @@
 forge "http://forge.puppet.com"
 
+mod 'puppetlabs-puppet_agent', '1.4.1'
+mod 'puppetlabs-apt', '4.1.0'
+mod 'puppetlabs-concat', '4.0.1'
+mod 'puppetlabs-firewall', '1.9.0'
 mod 'puppetlabs-inifile', '2.0.0'
+mod 'puppetlabs-postgresql', '5.1.0'
+mod 'puppetlabs-puppetdb', '6.0.1'
 mod 'puppetlabs-stdlib', '4.17.1'
+mod 'puppetlabs-transition', '0.1.1'
 mod 'saz-sudo', '4.2.0'
