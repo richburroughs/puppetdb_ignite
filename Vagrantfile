@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "puppet-master" do |vm|
     vm.vm.hostname = "puppet-master.local"
-    vm.vm.synced_folder ".", "/vagrant", disabled: false
+    vm.vm.synced_folder ".", "/vagrant"
 
     vm.vm.provision "install master", type: "shell", inline: <<-SHELL
       puppet apply --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
