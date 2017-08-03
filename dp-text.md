@@ -1,16 +1,18 @@
 PuppetDB ignite talk
 
-So, puppet automatically stores all of this data for you in PuppetDB. In order to get that data out, you use Puppet Query Language, or PQL.
+So Puppet has stored all this information for you. You get it out with Puppet Query Language, or PQL for short.
 
 With PQL you specify what kind of data you want — say node inventory or resources — and then a filter on that data.
 
 ---
 
-Let's talk about node inventory first. Puppet automatically collects a bunch facts about all of your nodes. (By "nodes" I mean servers or virtual machines.)
+As Rich said, puppet automatically collects a bunch facts about all of your nodes and then stores that in the node inventory.
 
-Little clarification; certname is a puppet thing, but it's generally equivalent to the hostname.
+Two points of clarification:
 
-Puppet stores all of that in the inventory.
+By "nodes" I mean servers or virtual machines.
+
+And, certname is a puppet thing; it's generally equivalent to the hostname.
 
 ---
 
@@ -32,7 +34,7 @@ Of course, you can query resources just like node inventory.
 
 ---
 
-Here's an example. We're querying resources, and we only want ones with the type `postgresql::server::db`.
+The PQL structure is pretty similar. We're querying resources, and we only want ones with the type `postgresql::server::db`.
 
 That's gonna return a *bunch* of useful information about each instance of the resource. It tells you what node it's on, all of its parameters, as well as the file and line number where it's defined in your puppet code. Super useful for debugging.
 
@@ -41,7 +43,7 @@ It's also great for ad hoc testing. Let's say I change a resource; I can go to P
 ---
 ---
 
-Here's another useful query. If you're not familiar with Puppet, the standard practice is to give each node a "role", like "web" or "db". Here's a simple query that returns every node in your infrastructure along with the role assigned to it.
+The standard practice in puppet is to give each node a "role", like "web" or "db". Here's a simple query that returns every node in your infrastructure along with the role assigned to it.
 
 ---
 
