@@ -13,7 +13,8 @@ Vagrant.configure(2) do |config|
     if [ ! -x /opt/puppetlabs/bin/puppet ] ; then
       rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
       yum install -y puppet-agent avahi
-      /opt/puppetlabs/bin/puppet config set --section main server puppet-master.local
+      /opt/puppetlabs/bin/puppet config set --section main \
+        server puppet-master.local
     fi
   SHELL
 
