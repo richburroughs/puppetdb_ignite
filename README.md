@@ -1,4 +1,5 @@
-# puppetdb_igite
+# puppetdb_ignite
+
 Slides for Config Management Camp Portland talk on PuppetDB
 
 The text for the slides in Markdown is in the file called slides.md.
@@ -11,3 +12,8 @@ The PDF of the slides is called slides.pdf.
 * [Examples](https://docs.puppet.com/puppetdb/5.0/api/query/examples-pql.html)
 * [Tutorial](https://docs.puppet.com/puppetdb/5.0/api/query/tutorial-pql.html)
 * [Reference](https://docs.puppet.com/puppetdb/5.0/api/query/v4/pql.html)
+
+## Authors
+
+* Daniel Parks [@daemonhoarse](https://twitter.com/daemonhoarse)
+* Rich Burroughs [@richburroughs](https://twitter.com/richburroughs)
