@@ -1,16 +1,18 @@
 PuppetDB ignite talk
 
-So, puppet automatically stores all of this data for you in PuppetDB. In order to get that data out, you use Puppet Query Language, or PQL.
+So Puppet has stored all this information for you. You get it out with Puppet Query Language, or PQL for short.
 
 With PQL you specify what kind of data you want — say node inventory or resources — and then a filter on that data.
 
 ---
 
-Let's talk about node inventory first. Puppet automatically collects a bunch facts about all of your nodes. (By "nodes" I mean servers or virtual machines.)
+As Rich said, puppet automatically collects a bunch facts about all of your nodes and then stores that in the node inventory.
 
-Little clarification; certname is a puppet thing, but it's generally equivalent to the hostname.
+Two points of clarification:
 
-Puppet stores all of that in the inventory.
+By "nodes" I mean servers or virtual machines.
+
+And, certname is a puppet thing; it's generally equivalent to the hostname.
 
 ---
 
