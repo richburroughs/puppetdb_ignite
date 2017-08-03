@@ -8,6 +8,10 @@ class profile::base {
     package_version => '5.0.0',
   }
 
+  package { 'puppet-client-tools':
+    require => Class['puppet_agent'],
+  }
+
   package { 'vim-enhanced': }
 
   file { '/srv':

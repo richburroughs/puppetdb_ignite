@@ -1,5 +1,8 @@
 # This class is used via puppet apply when bootstrapping the master
 class profile::puppetserver::bootstrap {
+  include ::puppetdb
+  include ::puppetdb::master::config
+
   package { 'puppetserver':
     notify  => Service['puppetserver'],
   }
@@ -24,10 +27,5 @@ class profile::puppetserver::bootstrap {
     value   => 'true',
     require => Package['puppetserver'],
     notify  => Service['puppetserver'],
-  }
-
-  service { 'puppetserver':
-    ensure => running,
-    enable => true,
   }
 }
