@@ -34,7 +34,7 @@ Of course, you can query resources just like node inventory.
 
 ---
 
-Here's an example. We're querying resources, and we only want ones with the type `postgresql::server::db`.
+The PQL structure is pretty similar. We're querying resources, and we only want ones with the type `postgresql::server::db`.
 
 That's gonna return a *bunch* of useful information about each instance of the resource. It tells you what node it's on, all of its parameters, as well as the file and line number where it's defined in your puppet code. Super useful for debugging.
 
@@ -43,7 +43,7 @@ It's also great for ad hoc testing. Let's say I change a resource; I can go to P
 ---
 ---
 
-Here's another useful query. If you're not familiar with Puppet, the standard practice is to give each node a "role", like "web" or "db". Here's a simple query that returns every node in your infrastructure along with the role assigned to it.
+The standard practice in puppet is to give each node a "role", like "web" or "db". Here's a simple query that returns every node in your infrastructure along with the role assigned to it.
 
 ---
 
