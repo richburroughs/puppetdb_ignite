@@ -1,5 +1,6 @@
 class profile::base {
   include ::profile::base::sudo
+  include ::profile::base::hosts
 
   # This is separate from the puppet5 repo
   class { ::puppet_agent:
