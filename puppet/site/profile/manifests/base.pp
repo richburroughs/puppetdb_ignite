@@ -1,4 +1,5 @@
 class profile::base {
+  include ::profile::base::bootstrap
   include ::profile::base::sudo
   include ::profile::base::hosts
 
@@ -21,9 +22,5 @@ class profile::base {
   file { '/etc/motd':
     ensure  => file,
     content => "Configured as role::${lookup('role', String[1])}\n",
-  }
-
-  class { ::firewall:
-    ensure => stopped,
   }
 }

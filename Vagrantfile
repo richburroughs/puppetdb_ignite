@@ -13,9 +13,12 @@ Vagrant.configure(2) do |config|
     if [ ! -x /opt/puppetlabs/bin/puppet ] ; then
       rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
       yum install -y puppet-agent avahi
-      /opt/puppetlabs/bin/puppet config set --section main \
-        server puppet-master.local
     fi
+
+    /opt/puppetlabs/bin/puppet apply \
+      --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
+      -e 'include ::profile::base::bootstrap'
+    true # puppet returns non-zero if it makes a change
   SHELL
 
   # First run of puppet.
@@ -30,8 +33,15 @@ Vagrant.configure(2) do |config|
     vm.vm.synced_folder ".", "/vagrant"
 
     vm.vm.provision "install master", type: "shell", inline: <<-SHELL
-      puppet apply --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
+      /opt/puppetlabs/bin/puppet apply \
+        --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
         -e 'include ::profile::puppetserver::bootstrap'
+      systemctl start puppetserver
+      /opt/puppetlabs/bin/puppet agent --test
+
+      /opt/puppetlabs/bin/puppet apply \
+        --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
+        -e 'include ::profile::puppetserver::bootstrap2'
       true # puppet returns non-zero if it makes a change
     SHELL
 
