@@ -1,4 +1,5 @@
 class profile::base {
+  include ::profile::base::bootstrap
   include ::profile::base::sudo
   include ::profile::base::hosts
 
@@ -6,6 +7,10 @@ class profile::base {
   class { ::puppet_agent:
     collection      => 'PC1',
     package_version => '5.0.0',
+  }
+
+  package { 'puppet-client-tools':
+    require => Class['puppet_agent'],
   }
 
   package { 'vim-enhanced': }
@@ -17,9 +22,5 @@ class profile::base {
   file { '/etc/motd':
     ensure  => file,
     content => "Configured as role::${lookup('role', String[1])}\n",
-  }
-
-  class { ::firewall:
-    ensure => stopped,
   }
 }

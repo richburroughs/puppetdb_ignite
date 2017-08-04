@@ -1,19 +1,11 @@
 # This class is used via puppet apply when bootstrapping the master
 class profile::puppetserver::bootstrap {
-  package { 'puppetserver':
-    notify  => Service['puppetserver'],
-  }
+  include ::profile::base::bootstrap
+
+  package { 'puppetserver': }
 
   file { '/etc/sysconfig/puppetserver':
     source  => 'puppet:///modules/profile/puppetserver/sysconfig.sh',
-    require => Package['puppetserver'],
-    notify  => Service['puppetserver'],
-  }
-
-  file { '/etc/puppetlabs/code/environments/production':
-    ensure  => link,
-    target  => '/vagrant/puppet',
-    force   => true,
     require => Package['puppetserver'],
   }
 
@@ -23,11 +15,15 @@ class profile::puppetserver::bootstrap {
     setting => 'autosign',
     value   => 'true',
     require => Package['puppetserver'],
-    notify  => Service['puppetserver'],
   }
 
-  service { 'puppetserver':
-    ensure => running,
-    enable => true,
+  # The service doesn't exist during bootstrap.
+  if defined(Service['puppetserver']) {
+    Package['puppetserver']
+      ~> Service['puppetserver']
+    File['/etc/sysconfig/puppetserver']
+      ~> Service['puppetserver']
+    Ini_setting['/etc/puppetlabs/puppet/puppet.conf autosign']
+      ~> Service['puppetserver']
   }
 }
