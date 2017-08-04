@@ -1,6 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+PUPPET = '/opt/puppetlabs/bin/puppet'
+MODULEPATH = '/vagrant/puppet/site:/vagrant/puppet/modules'
+
 Vagrant.configure(2) do |config|
   config.vm.box = "centos/7"
   config.vm.network "private_network", type: "dhcp"
@@ -10,20 +13,19 @@ Vagrant.configure(2) do |config|
 
   # Bootstrap: install puppet agent on all hosts
   config.vm.provision "install agent", type: "shell", inline: <<-SHELL
-    if [ ! -x /opt/puppetlabs/bin/puppet ] ; then
+    if [ ! -x #{PUPPET} ] ; then
       rpm -Uvh https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
       yum install -y puppet-agent avahi
     fi
 
-    /opt/puppetlabs/bin/puppet apply \
-      --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
+    #{PUPPET} apply --modulepath #{MODULEPATH} \
       -e 'include ::profile::base::bootstrap'
     true # puppet returns non-zero if it makes a change
   SHELL
 
   # First run of puppet.
   run_agent_sh = <<-SHELL
-    /opt/puppetlabs/bin/puppet agent --test
+    #{PUPPET} agent --test
     true # puppet returns non-zero if it makes a change
   SHELL
   config.vm.provision "run agent", type: "shell", inline: run_agent_sh
@@ -33,14 +35,14 @@ Vagrant.configure(2) do |config|
     vm.vm.synced_folder ".", "/vagrant"
 
     vm.vm.provision "install master", type: "shell", inline: <<-SHELL
-      /opt/puppetlabs/bin/puppet apply \
-        --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
+      #{PUPPET} apply --modulepath #{MODULEPATH} \
         -e 'include ::profile::puppetserver::bootstrap'
+      # This will fail, but it's necessary to get puppetdb to start. WTF?!
       systemctl start puppetserver
-      /opt/puppetlabs/bin/puppet agent --test
+      # Same deal. More WTF.
+      #{PUPPET} agent --test
 
-      /opt/puppetlabs/bin/puppet apply \
-        --modulepath /vagrant/puppet/site:/vagrant/puppet/modules \
+      #{PUPPET} apply --modulepath #{MODULEPATH} \
         -e 'include ::profile::puppetserver::bootstrap2'
       true # puppet returns non-zero if it makes a change
     SHELL
