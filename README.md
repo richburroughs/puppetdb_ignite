@@ -1,11 +1,12 @@
 # puppetdb_ignite
 
-Slides for Config Management Camp Portland talk on PuppetDB
+Slides for Config Management Camp Portland talk on PuppetDB.
 
-The text for the slides in Markdown is in the file called slides.md.
-That's the best place to go it you want to copy/paste any of the code.
+The text for the slides in Markdown is in the file called
+[slides.md](slides.md). That's the best place to go it you want to copy/paste
+any of the code. It is in the [Deckset](https://www.deckset.com) format.
 
-The PDF of the slides is called slides.pdf.
+A PDF of the slides including presentation notes is in [slides.pdf](slides.pdf).
 
 ## Example environment
 
@@ -28,5 +29,5 @@ You can access the puppet master with `vagrant ssh puppet-master`.
 
 ## Authors
 
-* Rich Burroughs [@richburroughs](https://twitter.com/richburroughs)
-* Daniel Parks [@daemonhoarse](https://twitter.com/daemonhoarse)
+* Rich Burroughs [@richburroughs.dev](https://bsky.app/profile/richburroughs.dev)
+* Daniel Parks [demon.horse](https://demon.horse/)
