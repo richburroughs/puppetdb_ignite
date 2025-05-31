@@ -10,7 +10,13 @@ The text for the slides in Markdown is in the file called
 [slides.md](slides.md). That's the best place to go it you want to copy/paste
 any of the code. It is in the [Deckset](https://www.deckset.com) format.
 
-A PDF of the slides including presentation notes is in [slides.pdf](slides.pdf).
+There are two rendered versions of the slides:
+
+* [A PDF of just the slides](slides.pdf)
+* [A PDF of the slides and presentation notes](slides-with-notes.pdf)
+
+The slides were originally on a 30 second timer, resulting in a 5 minute
+presentation.
 
 ## Example environment
 
