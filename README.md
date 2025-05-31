@@ -1,6 +1,10 @@
 # puppetdb_ignite
 
-Slides for Config Management Camp Portland talk on PuppetDB.
+Slides for 2017 Config Management Camp Portland talk on PuppetDB.
+
+> [!WARNING]
+> This was written in 2017 targeting PuppetDB 5, which is no longer supported.
+> Some links were updated in 2025 for clarity, but the examples may not work.
 
 The text for the slides in Markdown is in the file called
 [slides.md](slides.md). That's the best place to go it you want to copy/paste
@@ -23,9 +27,9 @@ You can access the puppet master with `vagrant ssh puppet-master`.
 
 ## PQL documentation
 
-* [Examples](https://docs.puppet.com/puppetdb/5.0/api/query/examples-pql.html)
-* [Tutorial](https://docs.puppet.com/puppetdb/5.0/api/query/tutorial-pql.html)
-* [Reference](https://docs.puppet.com/puppetdb/5.0/api/query/v4/pql.html)
+* [Examples](https://www.puppet.com/docs/puppetdb/latest/api/query/examples-pql)
+* [Tutorial](https://www.puppet.com/docs/puppetdb/latest/api/query/tutorial-pql)
+* [Reference](https://www.puppet.com/docs/puppetdb/latest/api/query/v4/pql)
 
 ## Authors
 
